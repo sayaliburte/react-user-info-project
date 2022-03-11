@@ -25,12 +25,12 @@ const tableIcons = {
   DetailPanel: forwardRef((props, ref) => (
     <ChevronRight {...props} ref={ref} />
   )),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+ 
   PreviousPage: forwardRef((props, ref) => (
     <ChevronLeft {...props} ref={ref} />
   )),
@@ -40,34 +40,47 @@ const tableIcons = {
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
-const TableComponent = (props) => {
+const TableComponent = (props) => { 
+ 
+ 
+  
   return (
     <MaterialTable
       icons={tableIcons}
       title="User Info"
       columns={[
         { title: "Name", field: "name" },
-        { title: "Surname", field: "surname" },
-        { title: "Birth Year", field: "birthYear", type: "numeric" },
+        { title: "date", field: "date", type: "date" },
+        { title: "address", field: "address" },
         {
-          title: "Birth Place",
-          field: "birthCity",
+          title: "Gender",
+          field: "gender",
+        },
+        {
+          title: "collegeName",
+          field: "collegeName",
+        },
+        {
+          title: "Hobbies",
+          field: "hobbyArray",
         },
       ]}
-      data={props.data}
+      data={props.userData}
       actions={[
-        {
-          icon: SaveIcon,
-
-          tooltip: "Save User",
-          onClick: (event, rowData) => alert("You saved " + rowData.name),
-        },
-        rowData => ({
-          icon:Clear,
-          tooltip: 'Delete User',
-          onClick: (event, rowData) => { props.onItemDelete(rowData.id) },
-         
-        })
+        (rowData) => ({
+          icon: Edit,
+          tooltip: "Update User Information",
+          onClick: (event, rowData) => {
+            props.handleOpen(rowData.id);
+          },
+        }),
+        (rowData) => ({
+          icon: Clear,
+          tooltip: "Delete User",
+          onClick: (event, rowData) => {
+            props.onItemDelete(rowData.id);
+          },
+        }),
       ]}
       options={{
         actionsColumnIndex: -1,

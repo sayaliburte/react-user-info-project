@@ -1,10 +1,9 @@
 import React, { Fragment, useState } from "react";
 import { Button, Grid, Box, Typography } from "@material-ui/core";
 import ModalComponent from "../components/ModalComponent";
-import classes from "./HomeScreen.module.css";
-import FormComponent from "../components/FormComponent";
 import UserForm from "../components/UserForm";
-const HomeScreen = () => {
+
+const HomeScreen = (props) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -18,7 +17,7 @@ const HomeScreen = () => {
         </Grid>
       </Grid>
       <ModalComponent open={open} onClose={handleClose}>
-          <UserForm />
+          <UserForm addUserData={props.addUser} handleClose={handleClose} />
       </ModalComponent>
     </Fragment>
   );

@@ -9,68 +9,43 @@ const data = [
   {
     id: 1,
     name: "Mehmet",
-    surname: "Baran",
-    birthYear: 1987,
-    birthCity: 63,
+    hobbyArray: ["ABC", "other", "asas"],
   },
   {
     id: 2,
-    name: "Zerya Betül",
-    surname: "Baran",
-    birthYear: 2017,
-    birthCity: 34,
-  },
-  {
-    id: 3,
-    name: "Mehmet",
-    surname: "Baran",
-    birthYear: 1987,
-    birthCity: 63,
-  },
-  {
-    id: 4,
-    name: "Zerya Betül",
-    surname: "Baran",
-    birthYear: 2017,
-    birthCity: 34,
-  },
-  {
-    id: 5,
-    name: "Mehmet",
-    surname: "Baran",
-    birthYear: 1987,
-    birthCity: 63,
-  },
-  {
-    id: 6,
-    name: "Zerya Betül",
-    surname: "Baran",
-    birthYear: 2017,
-    birthCity: 34,
+    gender: "female",
+    address: "Pune",
+    date: "12/2/2022",
+    collegeName: "PVG",
+    name: "Sayali",
+    hobbyArray: ["Reading", "other", "asas", "Travelling"],
   },
 ];
 function App() {
   const [userData, setUserData] = useState(data);
   const ondeleteUserData = (id) => {
-   
     let filteredData = userData.filter((user) => {
       return user.id !== id;
     });
     setUserData(filteredData);
   };
-  useEffect(()=>{
-
-  },[userData]);
+  const onUserDataAdd = (obj) => {
+    userData.push(obj);
+  };
+  const onUpdateData = (obj) => {
+    console.log(obj);
+  };
   return (
     <AppBarComponent>
       <Routes>
-        <Route path="/" element={<HomeScreen />} />
+        <Route path="/" element={<HomeScreen addUser={onUserDataAdd} />} />
         <Route
           path="/UserInfo"
           element={
             <UserInformationScreen
               userData={userData}
               onDelete={ondeleteUserData}
+              onUpdateData={onUpdateData}
             />
           }
         />
