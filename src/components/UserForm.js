@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import useHttp from "../hooks/use-http";
+
 import {
   Box,
   Grid,
@@ -34,6 +36,8 @@ const style = {
   p: 4,
 };
 const UserForm = (props) => {
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
+
   const [name, setName] = useState(props.fetchData ? props.fetchData.name : "");
   const [date, setDate] = useState(
     props.fetchData ? props.fetchData.date : null
@@ -74,6 +78,24 @@ const UserForm = (props) => {
       ? true
       : false,
   });
+  const [fetchCollegeName, setFetchCollegeName] = useState([]);
+  useEffect(() => {
+    const transformTasks = (collegeNameObj) => {
+      const loadedTasks = [];
+
+      for (const i in collegeNameObj) {
+        loadedTasks.push({ collegeName: collegeNameObj[i].name });
+      }
+
+      setFetchCollegeName(loadedTasks);
+    };
+
+    fetchTasks(
+      { url: "http://universities.hipolabs.com/search?country=india" },
+      transformTasks
+    );
+  }, [fetchTasks]);
+
   let hobbiesText = " ";
   if (props.fetchData) {
     hobbiesText = props.fetchData.hobbyArray
@@ -106,7 +128,7 @@ const UserForm = (props) => {
     }
 
     let userData = {
-      id: props.fetchData ? props.fetchData.id : name+date,
+      id: props.fetchData ? props.fetchData.id : name + date,
       name,
       date,
       address,
@@ -114,12 +136,9 @@ const UserForm = (props) => {
       collegeName,
       hobbyArray,
     };
-    if(props.fetchData)
-    {
+    if (props.fetchData) {
       props.onUpdateData(userData);
-    }
-    else
-    {
+    } else {
       props.addUserData(userData);
     }
     props.handleClose();
@@ -209,7 +228,7 @@ const UserForm = (props) => {
                 label="College"
                 onChange={(e) => setCollegeName(e.target.value)}
               >
-                <MenuItem value={"Ten"}>Ten</MenuItem>
+               {fetchCollegeName ? fetchCollegeName.map((f)=>{return <MenuItem value={f.collegeName}>{f.collegeName}</MenuItem>}):<MenuItem value={0}>No data</MenuItem>}
               </Select>
             </FormControl>
           </Grid>
@@ -292,7 +311,7 @@ const UserForm = (props) => {
                 fullWidth
                 disableElevation
               >
-                {props.fetchData ? "Update Data" :"Add User"}
+                {props.fetchData ? "Update Data" : "Add User"}
               </Button>
             </Grid>
           </Grid>

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import "./App.css";
-import { Grid } from "@material-ui/core";
+
 import { Route, Routes } from "react-router-dom";
 import UserInformationScreen from "./screens/UserInformationScreen";
 import HomeScreen from "./screens/HomeScreen";
