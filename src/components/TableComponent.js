@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import MaterialTable from "material-table";
-import SaveIcon from "@material-ui/icons/Save";
+
 import Search from "@material-ui/icons/Search";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -30,9 +30,12 @@ const tableIcons = {
   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
- 
+
   PreviousPage: forwardRef((props, ref) => (
     <ChevronLeft {...props} ref={ref} />
+  )),
+  NextPage:forwardRef((props, ref) => (
+    <ChevronRight {...props} ref={ref} />
   )),
   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
@@ -40,10 +43,12 @@ const tableIcons = {
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
-const TableComponent = (props) => { 
- 
- 
-  
+const TableComponent = (props) => {
+  const data = [...props.userData].reverse();
+  data.forEach((element) => {
+    element.hobbyArray = element.hobbyArray.filter((item) => item !== "other");
+    element.hobbies = element.hobbyArray.toString();
+  });
   return (
     <MaterialTable
       icons={tableIcons}
@@ -62,10 +67,10 @@ const TableComponent = (props) => {
         },
         {
           title: "Hobbies",
-          field: "hobbyArray",
+          field: "hobbies",
         },
       ]}
-      data={props.userData}
+      data={data}
       actions={[
         (rowData) => ({
           icon: Edit,
@@ -78,7 +83,9 @@ const TableComponent = (props) => {
           icon: Clear,
           tooltip: "Delete User",
           onClick: (event, rowData) => {
-            props.onItemDelete(rowData.id);
+            if (window.confirm("Are You Sure You want to Delete Data") === true) {
+              props.onItemDelete(rowData.id);
+            }
           },
         }),
       ]}

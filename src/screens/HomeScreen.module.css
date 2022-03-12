@@ -10,3 +10,8 @@
   box-shadow: 24;
   padding: 20px;
 }
+.button{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
