@@ -36,7 +36,7 @@ const style = {
   p: 4,
 };
 const UserForm = (props) => {
-  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
+  const { sendRequest: fetchTasks } = useHttp();
 
   const [name, setName] = useState(props.fetchData ? props.fetchData.name : "");
   const [date, setDate] = useState(
@@ -51,6 +51,7 @@ const UserForm = (props) => {
   const [collegeName, setCollegeName] = useState(
     props.fetchData ? props.fetchData.collegeName : ""
   );
+
   const [hobbies, setHobbies] = useState({
     Reading: !props.fetchData
       ? false
@@ -80,6 +81,7 @@ const UserForm = (props) => {
   });
   const [fetchCollegeName, setFetchCollegeName] = useState([]);
   useEffect(() => {
+    //fetching university name where country=India
     const transformTasks = (collegeNameObj) => {
       const loadedTasks = [];
 
@@ -128,7 +130,6 @@ const UserForm = (props) => {
     }
 
     let userData = {
-      id: props.fetchData ? props.fetchData.id : name + date,
       name,
       date,
       address,
@@ -137,20 +138,21 @@ const UserForm = (props) => {
       hobbyArray,
     };
     if (props.fetchData) {
-      props.onUpdateData(userData);
+      props.onUpdateData(props.fetchData.id, userData);
     } else {
       props.addUserData(userData);
     }
-    props.handleClose();
+    props.onClose();
   };
 
   return (
     <Box sx={style}>
       <form onSubmit={formSubmitHandler}>
         {props.fetchData ? <h2>Update User Data</h2> : <h2>Add User Data</h2>}
-        <Grid container spacing={2} xs={8} md={12}>
+        <Grid container spacing={3} xs={8} md={12}>
           <Grid item xs={12} md={12}>
             <TextField
+              required
               fullWidth
               label={props.fetchData ? "" : "Name"}
               variant="outlined"
@@ -164,6 +166,7 @@ const UserForm = (props) => {
           <Grid item xs={8} md={6}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
+                required
                 label={props.fetchData ? "" : "Birth Date"}
                 format="dd/MM/yyy"
                 style={{ width: "380px", height: "44px" }}
@@ -177,6 +180,7 @@ const UserForm = (props) => {
           </Grid>
           <Grid item xs={12} md={12}>
             <TextField
+              required
               fullWidth
               label="Address"
               variant="outlined"
@@ -198,6 +202,7 @@ const UserForm = (props) => {
                 aria-labelledby="demo-form-control-label-placement"
                 name="position"
                 defaultValue="end"
+                required
                 value={gender}
                 onChange={(e) => {
                   setGender(e.target.value);
@@ -222,13 +227,22 @@ const UserForm = (props) => {
                 Select College
               </InputLabel>
               <Select
+                required
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={collegeName}
                 label="College"
                 onChange={(e) => setCollegeName(e.target.value)}
               >
-               {fetchCollegeName ? fetchCollegeName.map((f)=>{return <MenuItem value={f.collegeName}>{f.collegeName}</MenuItem>}):<MenuItem value={0}>No data</MenuItem>}
+                {fetchCollegeName ? (
+                  fetchCollegeName.map((f) => {
+                    return (
+                      <MenuItem value={f.collegeName}>{f.collegeName}</MenuItem>
+                    );
+                  })
+                ) : (
+                  <MenuItem value={0}>No data</MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>
@@ -304,15 +318,29 @@ const UserForm = (props) => {
                 />
               ) : null}
             </Grid>
-            <Grid item xs={12} md={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                disableElevation
-              >
-                {props.fetchData ? "Update Data" : "Add User"}
-              </Button>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  disableElevation
+                >
+                  {props.fetchData ? "Update Data" : "Add User"}
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  disableElevation
+                  onClick={() => {
+                    props.onClose();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

@@ -3,7 +3,7 @@ import { Modal} from "@material-ui/core";
 
 const HomeScreen = (props) => {
   return (
-    <Modal open={props.open} onClose={props.onClose}>
+    <Modal open={props.open} >
       {props.children}
     </Modal>
   );
