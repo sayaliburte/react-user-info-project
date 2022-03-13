@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.css";
-
 import { Route, Routes } from "react-router-dom";
 import UserInformationScreen from "./screens/UserInformationScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -10,7 +9,6 @@ import AppBarComponent from "./components/AppBarComponent";
 2)Second Route is set for UserInformationScreen for displaying user information table.*/ 
 function App() {
   return (
-   
     <AppBarComponent>
       <Routes>
         <Route path="/" element={<HomeScreen />} />
@@ -19,5 +17,4 @@ function App() {
     </AppBarComponent>
   );
 }
-
 export default App;

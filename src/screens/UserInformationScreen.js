@@ -93,6 +93,11 @@ const UserInformationScreen = (props) => {
       </Box>
     );
   }
+  const onCloseSnackbar=()=>{
+      deleteDataSuccess
+        ? setDeleteDataSuccess(false)
+        : setUpdateDataSuccess(false);
+  }
   return (
     <Fragment>
       <Grid container className={styles.center}>
@@ -115,18 +120,10 @@ const UserInformationScreen = (props) => {
       <Snackbar
         open={deleteDataSuccess || updateDataSuccess}
         autoHideDuration={6000}
-        onClose={() => {
-          deleteDataSuccess
-            ? setDeleteDataSuccess(false)
-            : setUpdateDataSuccess(false);
-        }}
+        onClose={onCloseSnackbar}
       >
         <Alert
-          onClose={() => {
-            deleteDataSuccess
-              ? setDeleteDataSuccess(false)
-              : setUpdateDataSuccess(false);
-          }}
+          onClose={onCloseSnackbar}
           severity="success"
           sx={{ width: "100%" }}
         >
