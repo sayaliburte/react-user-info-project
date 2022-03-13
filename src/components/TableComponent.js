@@ -14,9 +14,7 @@ import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
 import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
-
 import ViewColumn from "@material-ui/icons/ViewColumn";
-
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -44,7 +42,6 @@ const tableIcons = {
 /*This is Table Component of material table*/
 const TableComponent = (props) => {
   const data = [...props.userData].reverse();
- 
   return (
     <MaterialTable
       icons={tableIcons}

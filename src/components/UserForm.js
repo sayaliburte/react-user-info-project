@@ -51,33 +51,15 @@ const UserForm = (props) => {
   const [gender, setGender] = useState(
     props.fetchData ? props.fetchData.gender : ""
   );
-
+  const checkIncludes=(item)=>{
+    return (!props.fetchData ? false : props.fetchData.hobbyArray.includes(item) ? true : false)
+  } 
   const [hobbies, setHobbies] = useState({
-    Reading: !props.fetchData
-      ? false
-      : props.fetchData.hobbyArray.includes("Reading")
-      ? true
-      : false,
-    Travelling: !props.fetchData
-      ? false
-      : props.fetchData.hobbyArray.includes("Travelling")
-      ? true
-      : false,
-    Gaming: !props.fetchData
-      ? false
-      : props.fetchData.hobbyArray.includes("Gaming")
-      ? true
-      : false,
-    Drawing: !props.fetchData
-      ? false
-      : props.fetchData.hobbyArray.includes("Drawing")
-      ? true
-      : false,
-    other: !props.fetchData
-      ? false
-      : props.fetchData.hobbyArray.includes("other")
-      ? true
-      : false,
+    Reading: checkIncludes("Reading"),
+    Travelling: checkIncludes("Travelling"),
+    Gaming: checkIncludes("Gaming"),
+    Drawing: checkIncludes("Drawing"),
+    other: checkIncludes("other"),
   });
   const [fetchCollegeName, setFetchCollegeName] = useState([]);
   useEffect(() => {
