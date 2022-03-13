@@ -5,6 +5,7 @@ import ModalComponent from "../components/ModalComponent";
 import UserForm from "../components/UserForm";
 import useHttp from "../hooks/use-http";
 import classes from "./HomeScreen.module.css";
+import CardComponent from '../components/CardComponent'
 const HomeScreen = (props) => {
   const { sendRequest: sendTaskRequest } = useHttp();
   const [open, setOpen] = useState(false);
@@ -30,6 +31,7 @@ const HomeScreen = (props) => {
 
   return (
     <Fragment>
+     <div><CardComponent /> </div>
       <div className={classes.button}>
         <Button onClick={handleOpen} color="secondary" variant="contained">
           Add New User
@@ -55,6 +57,7 @@ const HomeScreen = (props) => {
           This is a success message!
         </Alert>
       </Snackbar>
+   
     </Fragment>
   );
 };

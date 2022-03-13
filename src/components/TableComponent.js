@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import MaterialTable from "material-table";
-
+import DeleteIcon from '@material-ui/icons/Delete';
 import Search from "@material-ui/icons/Search";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -17,11 +17,12 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 
 import ViewColumn from "@material-ui/icons/ViewColumn";
+
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteIcon {...props} ref={ref} />),
   DetailPanel: forwardRef((props, ref) => (
     <ChevronRight {...props} ref={ref} />
   )),
@@ -34,9 +35,7 @@ const tableIcons = {
   PreviousPage: forwardRef((props, ref) => (
     <ChevronLeft {...props} ref={ref} />
   )),
-  NextPage:forwardRef((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
@@ -45,29 +44,33 @@ const tableIcons = {
 };
 const TableComponent = (props) => {
   const data = [...props.userData].reverse();
-  data.forEach((element) => {
-    element.hobbyArray = element.hobbyArray.filter((item) => item !== "other");
-    element.hobbies = element.hobbyArray.toString();
-  });
+  /*data.forEach((element) => {
+    element.hobbies = element.hobbyArray
+      .filter((item) => item !== "other")
+      .toString();
+  });*/
   return (
     <MaterialTable
       icons={tableIcons}
       title="User Info"
       columns={[
         { title: "Name", field: "name" },
-        { title: "date", field: "date", type: "date" },
-        { title: "address", field: "address" },
+        { title: "Birth Date", field: "date", type: "date" },
+        { title: "Address", field: "address" },
         {
           title: "Gender",
           field: "gender",
         },
         {
-          title: "collegeName",
+          title: "College Name",
           field: "collegeName",
         },
         {
           title: "Hobbies",
-          field: "hobbies",
+          field: "hobbyArray",
+          render: rowData=> { return (<p>{rowData.hobbyArray
+            .filter((item) => item !== "other")
+            .toString()}</p> );},
         },
       ]}
       data={data}
@@ -83,13 +86,16 @@ const TableComponent = (props) => {
           icon: Clear,
           tooltip: "Delete User",
           onClick: (event, rowData) => {
-            if (window.confirm("Are You Sure You want to Delete Data") === true) {
+            if (
+              window.confirm("Are You Sure You want to Delete Data") === true
+            ) {
               props.onItemDelete(rowData.id);
             }
           },
         }),
       ]}
       options={{
+        headerStyle: {backgroundColor:'ThreeDHighlight',fontWeight:'bold'},
         actionsColumnIndex: -1,
       }}
     />

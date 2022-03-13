@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 
 import { Route, Routes } from "react-router-dom";
@@ -7,6 +7,7 @@ import HomeScreen from "./screens/HomeScreen";
 import AppBarComponent from "./components/AppBarComponent";
 function App() {
   return (
+   
     <AppBarComponent>
       <Routes>
         <Route path="/" element={<HomeScreen />} />

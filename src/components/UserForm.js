@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useHttp from "../hooks/use-http";
-
+import useInput from "../hooks/use-input";
 import {
   Box,
   Grid,
@@ -35,22 +35,26 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+var regex =  /^[a-zA-Z]+ [a-zA-Z]+$/;
+const isNotEmpty = (value) => value.trim() !== "";
+const isNameValid = (value) => value.trim() !== "" && regex.test(value);
+
 const UserForm = (props) => {
   const { sendRequest: fetchTasks } = useHttp();
 
-  const [name, setName] = useState(props.fetchData ? props.fetchData.name : "");
+  //const [name, setName] = useState(props.fetchData ? props.fetchData.name : "");
   const [date, setDate] = useState(
     props.fetchData ? props.fetchData.date : null
   );
-  const [address, setAddress] = useState(
+  /*const [address, setAddress] = useState(
     props.fetchData ? props.fetchData.address : ""
-  );
+  );*/
   const [gender, setGender] = useState(
     props.fetchData ? props.fetchData.gender : ""
   );
-  const [collegeName, setCollegeName] = useState(
+  /*const [collegeName, setCollegeName] = useState(
     props.fetchData ? props.fetchData.collegeName : ""
-  );
+  );*/
 
   const [hobbies, setHobbies] = useState({
     Reading: !props.fetchData
@@ -113,6 +117,41 @@ const UserForm = (props) => {
       .toString(",");
   }
   const [addedHobbies, setAddedHobbies] = useState(hobbiesText);
+
+  const {
+    value: name,
+    isValid: nameIsValid,
+    hasError: nameHasError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+    reset: resetName,
+  } = useInput(isNameValid, props.fetchData ? props.fetchData.name : "");
+
+  const {
+    value: address,
+    isValid: addressIsValid,
+    hasError: addressHasError,
+    valueChangeHandler: addressChangeHandler,
+    inputBlurHandler: addressBlurHandler,
+    reset: resetAddress,
+  } = useInput(isNotEmpty, props.fetchData ? props.fetchData.address : "");
+
+  const {
+    value:collegeName ,
+    isValid:collegeNameIsValid,
+    hasError: collegeNameHasError,
+    valueChangeHandler: collegeNameChangeHandler,
+    inputBlurHandler: collegeNameBlurHandler,
+    reset: resetCollegeName,
+  } = useInput(isNotEmpty, props.fetchData ? props.fetchData.address : "");
+
+
+  let formIsValid = false;
+
+  if (nameIsValid && addressIsValid &&collegeNameIsValid) {
+    formIsValid = true;
+  }
+
   const handleChange = (e) => {
     setHobbies({ ...hobbies, [e.target.name]: e.target.checked });
   };
@@ -142,27 +181,32 @@ const UserForm = (props) => {
     } else {
       props.addUserData(userData);
     }
+    resetName();
+    setDate(null);
+    resetAddress();
+    resetCollegeName();
     props.onClose();
   };
-
   return (
     <Box sx={style}>
       <form onSubmit={formSubmitHandler}>
-        {props.fetchData ? <h2>Update User Data</h2> : <h2>Add User Data</h2>}
+        {props.fetchData ? <h2 style={{textAlign:'center'}}>Update User Data</h2> : <h2 style={{textAlign:'center'}}>Add User Data</h2>}
         <Grid container spacing={3} xs={8} md={12}>
           <Grid item xs={12} md={12}>
             <TextField
               required
               fullWidth
+              error={nameHasError ? true : false}
               label={props.fetchData ? "" : "Name"}
               variant="outlined"
               value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
+              onChange={nameChangeHandler}
+              onBlur={nameBlurHandler}
             />
+            {nameHasError && (
+              <span style={{ color: "red" }}>Please enter a first name.</span>
+            )}
           </Grid>
-
           <Grid item xs={8} md={6}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
@@ -184,13 +228,18 @@ const UserForm = (props) => {
               fullWidth
               label="Address"
               variant="outlined"
+              error={addressHasError ? true : false}
               multiline
               maxRows={4}
               value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-              }}
+              onChange={addressChangeHandler}
+              onBlur={addressBlurHandler}
             />
+            {addressHasError && (
+              <span style={{ color: "red" }}>
+                Please enter a valid address.
+              </span>
+            )}
           </Grid>
           <Grid item xs={12} md={12}>
             <FormControl>
@@ -201,6 +250,7 @@ const UserForm = (props) => {
                 row
                 aria-labelledby="demo-form-control-label-placement"
                 name="position"
+                
                 defaultValue="end"
                 required
                 value={gender}
@@ -210,12 +260,12 @@ const UserForm = (props) => {
               >
                 <FormControlLabel
                   value="male"
-                  control={<Radio />}
+                  control={<Radio required={true}/>}
                   label="Male"
                 />
                 <FormControlLabel
                   value="female"
-                  control={<Radio />}
+                  control={<Radio required={true}/>}
                   label="Female"
                 />
               </RadioGroup>
@@ -232,7 +282,8 @@ const UserForm = (props) => {
                 id="demo-simple-select"
                 value={collegeName}
                 label="College"
-                onChange={(e) => setCollegeName(e.target.value)}
+                onChange={collegeNameChangeHandler}
+                onBlur={collegeNameBlurHandler}
               >
                 {fetchCollegeName ? (
                   fetchCollegeName.map((f) => {
@@ -245,6 +296,11 @@ const UserForm = (props) => {
                 )}
               </Select>
             </FormControl>
+            {collegeNameHasError && (
+              <span style={{ color: "red" }}>
+                Please enter a valid College Name.
+              </span>
+            )}
           </Grid>
 
           <Grid item xs={12} md={12}>
@@ -320,11 +376,11 @@ const UserForm = (props) => {
             </Grid>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <Button
+               <Button disabled={!formIsValid}
                   type="submit"
                   variant="contained"
                   fullWidth
-                  disableElevation
+             color='primary'
                 >
                   {props.fetchData ? "Update Data" : "Add User"}
                 </Button>
@@ -333,7 +389,8 @@ const UserForm = (props) => {
                 <Button
                   variant="contained"
                   fullWidth
-                  disableElevation
+                 
+                  color='secondary'
                   onClick={() => {
                     props.onClose();
                   }}

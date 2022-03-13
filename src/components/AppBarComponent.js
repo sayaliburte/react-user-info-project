@@ -4,20 +4,20 @@ import { Link } from "react-router-dom";
 const AppBarComponent = (props) => {
   return (
     <Grid>
-      <AppBar>
+      <AppBar color='inherit'>
         <Toolbar style={{ justifyContent: "space-between" }}>
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" color="black">
             User Information Project
           </Typography>
           <div>
             <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-              <Button color="inherit">Home</Button>
+              <Button color="black">Home</Button>
             </Link>
             <Link
               to="/userInfo"
               style={{ textDecoration: "none", color: "white" }}
             >
-              <Button color="inherit">View User's List</Button>
+              <Button color="black">View User's List</Button>
             </Link>
           </div>
         </Toolbar>
