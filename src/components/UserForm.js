@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useHttp from "../hooks/use-http";
 import useInput from "../hooks/use-input";
+import { Alert } from "@mui/material";
 import {
   Box,
   Grid,
@@ -8,6 +9,7 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  CircularProgress,
   FormLabel,
   FormControl,
   MenuItem,
@@ -23,7 +25,7 @@ import {
 } from "@material-ui/pickers";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
-
+/*This Component is Form Component */
 const style = {
   position: "absolute",
   top: "50%",
@@ -35,26 +37,20 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-var regex =  /^[a-zA-Z]+ [a-zA-Z]+$/;
+//var regex = /^[a-zA-Z]+ [a-zA-Z]+$/;
 const isNotEmpty = (value) => value.trim() !== "";
-const isNameValid = (value) => value.trim() !== "" && regex.test(value);
+//const isNameValid = (value) => value.trim() !== "" && regex.test(value);
 
 const UserForm = (props) => {
-  const { sendRequest: fetchTasks } = useHttp();
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
 
-  //const [name, setName] = useState(props.fetchData ? props.fetchData.name : "");
   const [date, setDate] = useState(
     props.fetchData ? props.fetchData.date : null
   );
-  /*const [address, setAddress] = useState(
-    props.fetchData ? props.fetchData.address : ""
-  );*/
+
   const [gender, setGender] = useState(
     props.fetchData ? props.fetchData.gender : ""
   );
-  /*const [collegeName, setCollegeName] = useState(
-    props.fetchData ? props.fetchData.collegeName : ""
-  );*/
 
   const [hobbies, setHobbies] = useState({
     Reading: !props.fetchData
@@ -85,20 +81,20 @@ const UserForm = (props) => {
   });
   const [fetchCollegeName, setFetchCollegeName] = useState([]);
   useEffect(() => {
-    //fetching university name where country=India
-    const transformTasks = (collegeNameObj) => {
-      const loadedTasks = [];
+    //fetching university name where country=India from given Api
+    const transformData = (collegeNameObj) => {
+      const loadedCollege = [];
 
       for (const i in collegeNameObj) {
-        loadedTasks.push({ collegeName: collegeNameObj[i].name });
+        loadedCollege.push({ collegeName: collegeNameObj[i].name });
       }
 
-      setFetchCollegeName(loadedTasks);
+      setFetchCollegeName(loadedCollege);
     };
 
     fetchTasks(
       { url: "http://universities.hipolabs.com/search?country=india" },
-      transformTasks
+      transformData
     );
   }, [fetchTasks]);
 
@@ -117,7 +113,7 @@ const UserForm = (props) => {
       .toString(",");
   }
   const [addedHobbies, setAddedHobbies] = useState(hobbiesText);
-
+  /*Used for Validation using use-input custom hook*/
   const {
     value: name,
     isValid: nameIsValid,
@@ -125,7 +121,7 @@ const UserForm = (props) => {
     valueChangeHandler: nameChangeHandler,
     inputBlurHandler: nameBlurHandler,
     reset: resetName,
-  } = useInput(isNameValid, props.fetchData ? props.fetchData.name : "");
+  } = useInput(isNotEmpty, props.fetchData ? props.fetchData.name : "");
 
   const {
     value: address,
@@ -137,18 +133,17 @@ const UserForm = (props) => {
   } = useInput(isNotEmpty, props.fetchData ? props.fetchData.address : "");
 
   const {
-    value:collegeName ,
-    isValid:collegeNameIsValid,
+    value: collegeName,
+    isValid: collegeNameIsValid,
     hasError: collegeNameHasError,
     valueChangeHandler: collegeNameChangeHandler,
     inputBlurHandler: collegeNameBlurHandler,
     reset: resetCollegeName,
-  } = useInput(isNotEmpty, props.fetchData ? props.fetchData.address : "");
-
+  } = useInput(isNotEmpty, props.fetchData ? props.fetchData.collegeName : "");
 
   let formIsValid = false;
 
-  if (nameIsValid && addressIsValid &&collegeNameIsValid) {
+  if (nameIsValid && addressIsValid && collegeNameIsValid) {
     formIsValid = true;
   }
 
@@ -156,6 +151,8 @@ const UserForm = (props) => {
     setHobbies({ ...hobbies, [e.target.name]: e.target.checked });
   };
   let hobbyArray = [];
+
+  /*Form Submit Handler*/
   const formSubmitHandler = (event) => {
     event.preventDefault();
     Object.keys(hobbies).forEach(function (key) {
@@ -187,10 +184,38 @@ const UserForm = (props) => {
     resetCollegeName();
     props.onClose();
   };
+  if (isLoading) {
+    return (
+      <Box sx={style}>
+          <CircularProgress />
+      </Box>
+    );
+  }
+  if (error) {
+    return (
+      <Box sx={style}>
+        <Alert variant="filled" severity="error">{error}</Alert>
+        <Button
+          variant="contained"
+          fullWidth
+          color="secondary"
+          onClick={() => {
+            props.onClose();
+          }}
+        >
+          Go Back
+        </Button>
+      </Box>
+    );
+  }
   return (
     <Box sx={style}>
       <form onSubmit={formSubmitHandler}>
-        {props.fetchData ? <h2 style={{textAlign:'center'}}>Update User Data</h2> : <h2 style={{textAlign:'center'}}>Add User Data</h2>}
+        {props.fetchData ? (
+          <h2 style={{ textAlign: "center" }}>Update User Data</h2>
+        ) : (
+          <h2 style={{ textAlign: "center" }}>Add User Data</h2>
+        )}
         <Grid container spacing={3} xs={8} md={12}>
           <Grid item xs={12} md={12}>
             <TextField
@@ -250,7 +275,6 @@ const UserForm = (props) => {
                 row
                 aria-labelledby="demo-form-control-label-placement"
                 name="position"
-                
                 defaultValue="end"
                 required
                 value={gender}
@@ -260,12 +284,12 @@ const UserForm = (props) => {
               >
                 <FormControlLabel
                   value="male"
-                  control={<Radio required={true}/>}
+                  control={<Radio required={true} />}
                   label="Male"
                 />
                 <FormControlLabel
                   value="female"
-                  control={<Radio required={true}/>}
+                  control={<Radio required={true} />}
                   label="Female"
                 />
               </RadioGroup>
@@ -376,11 +400,12 @@ const UserForm = (props) => {
             </Grid>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-               <Button disabled={!formIsValid}
+                <Button
+                  disabled={!formIsValid}
                   type="submit"
                   variant="contained"
                   fullWidth
-             color='primary'
+                  color="primary"
                 >
                   {props.fetchData ? "Update Data" : "Add User"}
                 </Button>
@@ -389,8 +414,7 @@ const UserForm = (props) => {
                 <Button
                   variant="contained"
                   fullWidth
-                 
-                  color='secondary'
+                  color="secondary"
                   onClick={() => {
                     props.onClose();
                   }}

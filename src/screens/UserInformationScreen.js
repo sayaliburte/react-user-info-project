@@ -1,11 +1,13 @@
 import React, { useState, Fragment, useEffect } from "react";
-import { Grid, Snackbar } from "@material-ui/core";
+import { Grid, Snackbar, Box, CircularProgress } from "@material-ui/core";
 import styles from "./UserInformationScreen.module.css";
 import TableComponent from "../components/TableComponent";
 import ModalComponent from "../components/ModalComponent";
 import UserForm from "../components/UserForm.js";
 import useHttp from "../hooks/use-http";
 import { Alert } from "@mui/material";
+
+/*This Screen is used for displaying data of User*/
 const UserInformationScreen = (props) => {
   const [open, setOpen] = useState(false);
   const [deleteDataSuccess, setDeleteDataSuccess] = useState(false);
@@ -22,13 +24,12 @@ const UserInformationScreen = (props) => {
     fetchData = userData.filter((data) => data.id === idToUpdate);
     fetchData = { ...fetchData[0] };
   }
-  const { sendRequest } = useHttp();
+  const { isLoading, error, sendRequest } = useHttp();
   useEffect(() => {
     const viewUserData = (data) => {
       const loadedData = [];
 
       for (const i in data) {
-        console.log(data[i].hobbyArray.length);
         loadedData.push({ ...data[i], id: i });
       }
       setUserData(loadedData);
@@ -47,6 +48,7 @@ const UserInformationScreen = (props) => {
     setUserData(tempData);
     setDeleteDataSuccess(true);
   };
+  /*deleteUser function deletes particular user information when clicked on it */
   const deleteUser = async (id) => {
     sendRequest(
       {
@@ -57,6 +59,7 @@ const UserInformationScreen = (props) => {
     );
   };
 
+  /*updateUserData function update particular user information when clicked on it */
   const updateUser = (id, dataToUpdate) => {
     const tempData = [...userData];
     const updateDataindex = userData.findIndex((i) => i.id === id);
@@ -67,6 +70,7 @@ const UserInformationScreen = (props) => {
     setUserData(tempData);
     setUpdateDataSuccess(true);
   };
+
   const updateUserData = async (id, dataToUpdate) => {
     sendRequest(
       {
@@ -80,10 +84,20 @@ const UserInformationScreen = (props) => {
       updateUser.bind(null, id, dataToUpdate)
     );
   };
+  if (isLoading) {
+    return (
+      <Box
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <CircularProgress color="secondary" size={50} />
+      </Box>
+    );
+  }
   return (
     <Fragment>
       <Grid container className={styles.center}>
         <Grid item xs={10} md={8}>
+          {error && <Alert variant="filled" severity="error">Something Went Wrong Please Try Again Later</Alert>}
           <TableComponent
             userData={userData}
             onItemDelete={deleteUser}
