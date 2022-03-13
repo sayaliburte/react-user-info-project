@@ -8,7 +8,6 @@ import Check from "@material-ui/icons/Check";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import Clear from "@material-ui/icons/Clear";
-import DeleteOutline from "@material-ui/icons/DeleteOutline";
 import Edit from "@material-ui/icons/Edit";
 import FilterList from "@material-ui/icons/FilterList";
 import FirstPage from "@material-ui/icons/FirstPage";
@@ -42,13 +41,10 @@ const tableIcons = {
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
+/*This is Table Component of material table*/
 const TableComponent = (props) => {
   const data = [...props.userData].reverse();
-  /*data.forEach((element) => {
-    element.hobbies = element.hobbyArray
-      .filter((item) => item !== "other")
-      .toString();
-  });*/
+ 
   return (
     <MaterialTable
       icons={tableIcons}

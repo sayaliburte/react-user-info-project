@@ -1,11 +1,11 @@
 import React from "react";
 import { Modal} from "@material-ui/core";
-
-const HomeScreen = (props) => {
+/*This is reusable ModalComponent */
+const ModalComponent = (props) => {
   return (
     <Modal open={props.open} >
       {props.children}
     </Modal>
   );
 };
-export default HomeScreen;
+export default ModalComponent;

@@ -1,6 +1,7 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Grid, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+/*This is reusable AppBar Component */
 const AppBarComponent = (props) => {
   return (
     <Grid>
