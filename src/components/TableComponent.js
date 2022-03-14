@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import MaterialTable from "material-table";
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from "@material-ui/icons/Delete";
 import Search from "@material-ui/icons/Search";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -42,6 +42,7 @@ const tableIcons = {
 /*This is Table Component of material table*/
 const TableComponent = (props) => {
   const data = [...props.userData].reverse();
+  
   return (
     <MaterialTable
       icons={tableIcons}
@@ -61,9 +62,19 @@ const TableComponent = (props) => {
         {
           title: "Hobbies",
           field: "hobbyArray",
-          render: rowData=> { return (<p>{rowData.hobbyArray
-            .filter((item) => item !== "other")
-            .toString()}</p> );},
+          render: (rowData) => {
+            if (rowData.hobbyArray) {
+              return (
+                <p>
+                  {rowData.hobbyArray
+                    .filter((item) => item !== "other")
+                    .toString() }
+                </p>
+              );
+            } else {
+              return <p>NA</p>;
+            }
+          },
         },
       ]}
       data={data}
@@ -88,7 +99,7 @@ const TableComponent = (props) => {
         }),
       ]}
       options={{
-        headerStyle: {backgroundColor:'ThreeDHighlight',fontWeight:'bold'},
+        headerStyle: { backgroundColor: "ThreeDHighlight", fontWeight: "bold" },
         actionsColumnIndex: -1,
       }}
     />

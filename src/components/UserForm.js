@@ -37,9 +37,9 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-//var regex = /^[a-zA-Z]+ [a-zA-Z]+$/;
+var regex = /^[a-zA-Z-,]+(\s{0,1}[a-zA-Z-, ])*$/;
 const isNotEmpty = (value) => value.trim() !== "";
-//const isNameValid = (value) => value.trim() !== "" && regex.test(value);
+const isNameValid = (value) => value.trim() !== "" && value.match(regex);
 
 const UserForm = (props) => {
   const { isLoading, error, sendRequest: fetchTasks } = useHttp();
@@ -51,10 +51,13 @@ const UserForm = (props) => {
   const [gender, setGender] = useState(
     props.fetchData ? props.fetchData.gender : ""
   );
-  const checkIncludes=(item)=>{
-    return (!props.fetchData ? false : props.fetchData.hobbyArray.includes(item) ? true : false)
-  } 
-  const [hobbies, setHobbies] = useState({
+  const checkIncludes = (item) => {
+    return !props.fetchData
+      ? false
+      : props.fetchData.hobbyArray.includes(item)
+      ? true
+      : false;
+  };const [hobbies, setHobbies] = useState({
     Reading: checkIncludes("Reading"),
     Travelling: checkIncludes("Travelling"),
     Gaming: checkIncludes("Gaming"),
@@ -103,7 +106,7 @@ const UserForm = (props) => {
     valueChangeHandler: nameChangeHandler,
     inputBlurHandler: nameBlurHandler,
     reset: resetName,
-  } = useInput(isNotEmpty, props.fetchData ? props.fetchData.name : "");
+  } = useInput(isNameValid, props.fetchData ? props.fetchData.name : "");
 
   const {
     value: address,
@@ -169,14 +172,16 @@ const UserForm = (props) => {
   if (isLoading) {
     return (
       <Box sx={style}>
-          <CircularProgress />
+        <CircularProgress />
       </Box>
     );
   }
   if (error) {
     return (
       <Box sx={style}>
-        <Alert variant="filled" severity="error">{error}</Alert>
+        <Alert variant="filled" severity="error">
+          {error}
+        </Alert>
         <Button
           variant="contained"
           fullWidth
